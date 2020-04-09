@@ -1,9 +1,11 @@
 package io.alexc.classroomdtodemo.service;
 
 
+import io.alexc.classroomdtodemo.dto.ClassroomDto;
 import io.alexc.classroomdtodemo.dto.StudentDto;
 import io.alexc.classroomdtodemo.entity.Student;
 import io.alexc.classroomdtodemo.error.StudentNotFoundException;
+import io.alexc.classroomdtodemo.mapper.ClassroomMapper;
 import io.alexc.classroomdtodemo.mapper.StudentMapper;
 import io.alexc.classroomdtodemo.repository.StudentRepository;
 import org.springframework.data.domain.Page;
@@ -19,10 +21,12 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private final ClassroomMapper classroomMapper;
 
-    public StudentServiceImpl(StudentRepository studentRepository, StudentMapper studentMapper) {
+    public StudentServiceImpl(StudentRepository studentRepository, StudentMapper studentMapper, ClassroomMapper classroomMapper) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
+        this.classroomMapper = classroomMapper;
     }
 
     @Override
@@ -60,5 +64,11 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return this.studentRepository.findAll(PageRequest.of(0, Integer.MAX_VALUE)).map((this.studentMapper::toDto));
+    }
+
+    @Override
+    public ClassroomDto findStudentClassroomById(Integer studentId) {
+        return this.classroomMapper.toDto(this.studentRepository.findById(studentId).orElseThrow(
+                () -> new StudentNotFoundException(studentId)).getClassroom());
     }
 }

@@ -28,12 +28,14 @@ public class StudentControllerImpl implements StudentController {
     }
 
     @Override
-    public StudentDto getStudent(Integer id) {
-        return null;
+    @RequestMapping(value = "{id}")
+    public StudentDto getStudent(@PathVariable Integer id) {
+        return this.studentService.findStudentById(id);
     }
 
     @Override
-    public ClassroomDto getStudentsClassrooms(Integer id) {
-        return null;
+    @RequestMapping(value = "{id}/classroom", method = RequestMethod.GET)
+    public ClassroomDto getStudentsClassrooms(@PathVariable Integer id) {
+        return this.studentService.findStudentClassroomById(id);
     }
 }
